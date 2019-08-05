@@ -10,7 +10,7 @@
       </div>
 
       <div class="card-body">
-
+        @include('shared._errors')
         <form action="{{route('users.update',$user->id)}}" method="POST" accept-charset="UTF-8">
 
           <input type="hidden" name="_method" value="PUT">
@@ -23,7 +23,7 @@
 
           <div class="form-group">
             <label for="email-field">邮箱</label>
-            <input type="text" class="form-control" name="email" id="email-field" value="{{old('email',$user->email)}}" disabled>
+            <input type="text" class="form-control" name="email" id="email-field" value="{{old('email',$user->email)}}">
           </div>
 
           <div class="form-group">
