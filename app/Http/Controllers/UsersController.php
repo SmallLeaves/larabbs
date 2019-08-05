@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Requests\UserRequest;
 use App\Handlers\ImageUploadHandler;
+use App\Models\Topic;
+use Auth;
+
 class UsersController extends Controller
 {
     public function __construct(){
@@ -14,7 +17,10 @@ class UsersController extends Controller
         ]);
     }
     public function show(User $user){
-        return view('users.show',compact('user'));
+        $topics = Topic::with('user','category')
+                        ->where('user_id',Auth::id())
+                        ->paginate(20);
+        return view('users.show',compact('user','topics'));
     }
     public function edit(User $user){
         $this->authorize('update',$user);
