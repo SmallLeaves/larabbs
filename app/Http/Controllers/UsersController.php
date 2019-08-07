@@ -8,6 +8,7 @@ use App\Http\Requests\UserRequest;
 use App\Handlers\ImageUploadHandler;
 use App\Models\Topic;
 use Auth;
+use App\Models\Reply;
 
 class UsersController extends Controller
 {
@@ -20,7 +21,10 @@ class UsersController extends Controller
         $topics = Topic::with('user','category')
                         ->where('user_id',Auth::id())
                         ->paginate(20);
-        return view('users.show',compact('user','topics'));
+        $repies = Reply::where('user_id',$user->id)
+                            ->orderBy('created_at','desc')
+                            ->paginate(20);
+        return view('users.show',compact('user','topics','repies'));
     }
     public function edit(User $user){
         $this->authorize('update',$user);

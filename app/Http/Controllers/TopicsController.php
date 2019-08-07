@@ -9,6 +9,7 @@ use App\Http\Requests\TopicRequest;
 use App\Models\Category;
 use Auth;
 use App\Handlers\ImageUploadHandler;
+use App\Models\Reply;
 
 class TopicsController extends Controller
 {
@@ -28,9 +29,11 @@ class TopicsController extends Controller
         //URL矫正
         if( ! empty($topic->slug) && $topic->slug != $request->slug){
             return redirect($topic->link(),301);
-
         }
-        return view('topics.show', compact('topic'));
+        $repies = Reply::where('topic_id',$topic->id)
+                                ->orderBy('created_at','desc')
+                                ->paginate(20);
+        return view('topics.show', compact('topic','repies'));
     }
 
 	public function create(Topic $topic)
