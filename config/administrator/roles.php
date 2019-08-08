@@ -22,10 +22,9 @@ return [
             'output' => function($value,$model){
                 $model->load('permissions');
                 $result = [];
-                foreach ($model->permissions as $permission) {
+                foreach (e($model->permissions) as $permission) {
                     $result[] = $permission->name;
                 }
-
                 return empty($result)? 'N/A' : implode($result, ' | ');
             },
             'sortable' => false,
