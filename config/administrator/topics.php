@@ -4,7 +4,7 @@ use App\Models\Topic;
 
 return [
     'title' => '话题',
-    'single' => '话题',
+    'single' => '话题列表',
     'model' => Topic::class,
 
     'columns' => [
