@@ -23,7 +23,7 @@ trait ActiveUserHelper{
     protected $cache_key = 'larabbs_active_users';
     protected $cache_expire_in_seconds = 65*60;
 
-    public function getActiveUser(){
+    public function getActiveUsers(){
         // 尝试从缓存中悟出cache_key对应的值
         //如果能取到,遍直接返回数据
         //否则运行匿名函数中的额代码来取出活跃用户数据,返回的同时做了缓存
@@ -33,20 +33,20 @@ trait ActiveUserHelper{
         });
     }
 
-    public function calculateAndActiveUsers()
+    public function calculateAndCacheActiveUsers()
     {
         // 取得活跃用户列表
-        $active_users = $tihs->calculateActiveUsers();
+        $active_users = $this->calculateActiveUsers();
         // 并加以缓存
-        $this->cacheActivaUsers($active_users);
+        $this->cacheActiveUsers($active_users);
     }
     public function calculateActiveUsers()
     {
         $this->calculateTopicScore();
-        $tihs->calculateReplyScore();
+        $this->calculateReplyScore();
 
         // 数组按照得分排序
-        $users = Arr::sort($tihs->users,function ($user){
+        $users = Arr::sort($this->users,function ($user){
             return $user['score'];
         });
         
@@ -93,7 +93,7 @@ trait ActiveUserHelper{
     {
         // 从回复数据表中取出限定时间范围$pass_days内,有发表过回复的用户
         // 并且同时取出用户此段时间发布的回复数量
-        $reply_users = Reply::query()->select(DB::row('user_id,count(*) as reply_count'))
+        $reply_users = Reply::query()->select(DB::raw('user_id,count(*) as reply_count'))
                                     ->where('created_at','>=',Carbon::now()->subDays($this->pass_days))
                                     ->groupBy('user_id')
                                     ->get();
@@ -111,7 +111,7 @@ trait ActiveUserHelper{
     private function cacheActiveUsers($active_users)
     {
         // 将数据放入缓存中
-        Cache::put($this->cache_key,$cache_users,$this->cache_expire_in_seconds);
+        Cache::put($this->cache_key,$active_users,$this->cache_expire_in_seconds);
     }
 }
 
